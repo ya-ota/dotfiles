@@ -44,7 +44,22 @@ let g:lightline = {
 
 Plugin 'tpope/vim-surround'
 " visual mode > S(
-"
+
+Plugin 'rking/ag.vim'
+let g:ag_working_path_mode="r"
+"e    to open file and close the quickfix window
+"o    to open (same as enter)
+"go   to preview file (open but maintain focus on ag.vim results)
+"t    to open in new tab
+"T    to open in new tab silently
+"h    to open in horizontal split
+"H    to open in horizontal split silently
+"v    to open in vertical split
+"gv   to open in vertical split silently
+"q    to close the quickfix window
+
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 
 Plugin 'fatih/vim-go'
 
@@ -67,14 +82,24 @@ augroup fileTypeIndent
     autocmd BufNewFile,BufRead *.yaml setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
     autocmd BufNewFile,BufRead *.yml setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
     autocmd BufNewFile,BufRead *.rb setlocal tabstop=2 softtabstop=2 shiftwidth=2
+
+    autocmd FileType go nmap <leader>gr <Plug>(go-run-vertical)
+    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gb :<C-u>GoBuild<Return>
+    "autocmd BufNewFile,BufRead *.go nnoremap <Leader>gd :<C-u>GoDoc<Return>
+    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gdb :<C-u>GoDebugStart<Return>
+    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gta :<C-u>GoTest<Return>
+    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gtf :<C-u>GoTestFunc<Return>
 augroup END
 
 " Mapping
 let mapleader = ',' 
 inoremap <Leader>dt.  <C-r>=strftime('%Y-%m-%dT%H:%M:%S')<Return> 
 nnoremap <Leader>w  :<C-u>tabnew<Return> 
-nnoremap <Leader>s  :<C-u>source ~/.vimrc<Return><C-l>
-nnoremap <Leader>e  :<C-u>tabnew<CR>:e ~/.vimrc<Return><C-l>
+nnoremap <Leader>s  :<C-u>source ~/.vimrc<Return>
+nnoremap <Leader>e  :<C-u>tabnew<CR>:e ~/.vimrc<Return>
 nnoremap <Leader>m  :<C-u>marks<Return>
+nnoremap <Leader>pi  :<C-u>PluginInstall<Return>
+nnoremap <Leader>ag  :<C-u>Ag<Return>
+nnoremap <Leader>f :GFiles<CR>
 
 

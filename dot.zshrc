@@ -68,9 +68,25 @@ fi
 zplug load
 #zplug load --verbose
 
+#for golang
 export GOPATH=$HOME/dev
 export PATH=$PATH:$GOPATH/bin
 
+#for fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
+
+bindkey '^]' peco-src
+function peco-src() {
+  local src=$(ghq list --full-path | peco --query "$LBUFFER")
+  if [ -n "$src" ]; then
+    BUFFER="cd $src"
+    zle accept-line
+  fi
+  zle -R -c
+}
+zle -N peco-src
 
 autoload -U promptinit; promptinit
 # optionally define some options

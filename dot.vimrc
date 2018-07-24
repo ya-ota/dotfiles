@@ -82,7 +82,9 @@ augroup fileTypeIndent
     autocmd BufNewFile,BufRead *.yaml setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
     autocmd BufNewFile,BufRead *.yml setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
     autocmd BufNewFile,BufRead *.rb setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END
 
+augroup fileTypeMapping
     autocmd FileType go nmap <leader>gr <Plug>(go-run-vertical)
     autocmd BufNewFile,BufRead *.go nnoremap <Leader>gb :<C-u>GoBuild<Return>
     "autocmd BufNewFile,BufRead *.go nnoremap <Leader>gd :<C-u>GoDoc<Return>

@@ -65,8 +65,12 @@ if ! zplug check --verbose; then
 fi
 
 # Then, source plugins and add commands to $PATH
-#zplug load
-zplug load --verbose
+zplug load
+#zplug load --verbose
+
+export GOPATH=$HOME/dev
+export PATH=$PATH:$GOPATH/bin
+
 
 autoload -U promptinit; promptinit
 # optionally define some options

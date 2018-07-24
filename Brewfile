@@ -1,8 +1,14 @@
+# cd ~/.brewfile/Brewfile
+# brew bundle
 cask_args appdir: '/Applications'
 tap 'caskroom/cask'
 
 brew 'zsh'
+brew 'go'
+brew 'ghq'
 brew 'macvim'
+brew 'wget'
+brew 'make'
 brew 'htop'
 brew 'tmux'
 brew 'zplug'
@@ -13,6 +19,7 @@ cask 'shiftit'
 cask 'google-chrome'
 cask 'firefox'
 cask 'vivaldi'
+cask 'fork'
 cask 'virtualbox'
 cask 'vagrant'
 cask 'vagrant-manager'

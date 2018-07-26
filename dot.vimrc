@@ -60,7 +60,6 @@ let g:ag_working_path_mode="r"
 
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
-
 Plugin 'fatih/vim-go'
 
 syntax on
@@ -75,6 +74,9 @@ set softtabstop=2
 set noexpandtab
 set autoindent
 set smartindent
+set cursorcolumn
+set clipboard+=unnamed
+set clipboard+=autoselect
 
 augroup fileTypeIndent
     autocmd!
@@ -85,17 +87,18 @@ augroup fileTypeIndent
 augroup END
 
 augroup fileTypeMapping
-    autocmd FileType go nmap <leader>gr <Plug>(go-run-vertical)
-    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gb :<C-u>GoBuild<Return>
-    "autocmd BufNewFile,BufRead *.go nnoremap <Leader>gd :<C-u>GoDoc<Return>
-    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gdb :<C-u>GoDebugStart<Return>
-    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gta :<C-u>GoTest<Return>
-    autocmd BufNewFile,BufRead *.go nnoremap <Leader>gtf :<C-u>GoTestFunc<Return>
+    autocmd FileType go nnoremap <Leader>gb :<C-u>GoBuild<Return>
+    autocmd FileType go nnoremap <Leader>gd :<C-u>GoDoc<Return>
+    autocmd FileType go nnoremap <leader>gr :<C-u>GoRun<Return>
+    autocmd FileType go nnoremap <Leader>gdb :<C-u>GoDebugStart<Return>
+    autocmd FileType go nnoremap <Leader>gta :<C-u>GoTest<Return>
+    autocmd FileType go nnoremap <Leader>gtf :<C-u>GoTestFunc<Return>
 augroup END
 
 " Mapping
 let mapleader = ',' 
 inoremap <Leader>dt.  <C-r>=strftime('%Y-%m-%dT%H:%M:%S')<Return> 
+nnoremap <Leader>l  :<C-u>set cursorcolumn<Return> 
 nnoremap <Leader>w  :<C-u>tabnew<Return> 
 nnoremap <Leader>s  :<C-u>source ~/.vimrc<Return>
 nnoremap <Leader>e  :<C-u>tabnew<CR>:e ~/.vimrc<Return>
@@ -103,6 +106,20 @@ nnoremap <Leader>m  :<C-u>marks<Return>
 nnoremap <Leader>pi  :<C-u>PluginInstall<Return>
 nnoremap <Leader>ag  :<C-u>Ag<Return>
 nnoremap <Leader>f :GFiles<CR>
+
+nnoremap <Plug>(my-switch) <Nop>
+nmap <Leader>s <Plug>(my-switch)
+nnoremap <silent> <Plug>(my-switch)u :call <SID>toggle_syntax()<CR>
+
+function! s:toggle_syntax() abort
+  if exists('g:rowvisible_on')
+    nocursolumn
+    echo 'syntax off'
+  else
+    cursolumn
+    echo 'syntax on'
+  endif
+endfunction
 
 if has('vim_starting')
     " 挿入モード時に非点滅の縦棒タイプのカーソル

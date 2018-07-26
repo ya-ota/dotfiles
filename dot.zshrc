@@ -88,6 +88,14 @@ function peco-src() {
 }
 zle -N peco-src
 
+function peco-history-selection() {
+	BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+		CURSOR=$#BUFFER
+		zle reset-prompt
+}
+zle -N peco-history-selection
+bindkey '^R' peco-history-selection
+
 autoload -U promptinit; promptinit
 # optionally define some options
 PURE_CMD_MAX_EXEC_TIME=10

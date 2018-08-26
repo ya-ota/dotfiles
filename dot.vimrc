@@ -1,4 +1,14 @@
+set encoding=utf-8
 scriptencoding utf-8
+set ambiwidth=double
+set incsearch
+set ignorecase
+set smartcase
+set hlsearch
+set showmatch
+source $VIMRUNTIME/macros/matchit.vim
+set wildmenu
+set history=1000
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -36,14 +46,14 @@ filetype plugin indent on    " required
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 
-Plugin 'itchyny/lightline.vim'
-set laststatus=2
-let g:lightline = {
-      \ 'colorscheme': 'seoul256',
-      \ }
+"Plugin 'itchyny/lightline.vim'
+"set laststatus=2
+"let g:lightline = {
+      "\ 'colorscheme': 'seoul256',
+     "\ }
 
 Plugin 'tpope/vim-surround'
-" visual mode > S(
+" visual mode :S(
 
 Plugin 'rking/ag.vim'
 let g:ag_working_path_mode="r"
@@ -60,13 +70,22 @@ let g:ag_working_path_mode="r"
 
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
-Plugin 'fatih/vim-go'
+Plugin 'Shougo/neocomplete'
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Plugin key-mappings.
+inoremap <expr><C-g> complete_common_string    neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+Plugin 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plugin 'nsf/gocode', {'rtp': 'vim/'}
 
 syntax on
 set t_vb=
 set visualbell
 set noerrorbells
-
 set nowrapscan
 set tabstop=2
 set shiftwidth=2
@@ -74,9 +93,10 @@ set softtabstop=2
 set noexpandtab
 set autoindent
 set smartindent
-set cursorcolumn
 set clipboard+=unnamed
 set clipboard+=autoselect
+set cursorcolumn
+highlight cursorcolumn ctermbg=black
 
 augroup fileTypeIndent
     autocmd!
@@ -87,18 +107,19 @@ augroup fileTypeIndent
 augroup END
 
 augroup fileTypeMapping
-    autocmd FileType go nnoremap <Leader>gb :<C-u>GoBuild<Return>
-    autocmd FileType go nnoremap <Leader>gd :<C-u>GoDoc<Return>
-    autocmd FileType go nnoremap <leader>gr :<C-u>GoRun<Return>
-    autocmd FileType go nnoremap <Leader>gdb :<C-u>GoDebugStart<Return>
-    autocmd FileType go nnoremap <Leader>gta :<C-u>GoTest<Return>
-    autocmd FileType go nnoremap <Leader>gtf :<C-u>GoTestFunc<Return>
+    autocmd!
+    autocmd FileType go nnoremap <Leader>b :<C-u>GoBuild<Return>
+    autocmd FileType go nnoremap <Leader>d :<C-u>GoDoc<Return>
+    autocmd FileType go nnoremap <leader>r <Plug>(go-run)
+    autocmd FileType go nnoremap <Leader>t :<C-u>GoTest<Return>
+    "autocmd FileType go nnoremap <Leader>gtf :<C-u>GoTestFunc<Return>
+    autocmd FileType go nnoremap <Leader>g :<C-u>GoDebugStart ./ test<Return>
+    autocmd FileType go nnoremap <Leader>p :<C-u>GoDebugBreakpoint<Return>
 augroup END
 
 " Mapping
 let mapleader = ',' 
 inoremap <Leader>dt.  <C-r>=strftime('%Y-%m-%dT%H:%M:%S')<Return> 
-nnoremap <Leader>l  :<C-u>set cursorcolumn<Return> 
 nnoremap <Leader>w  :<C-u>tabnew<Return> 
 nnoremap <Leader>s  :<C-u>source ~/.vimrc<Return>
 nnoremap <Leader>e  :<C-u>tabnew<CR>:e ~/.vimrc<Return>
@@ -106,27 +127,26 @@ nnoremap <Leader>m  :<C-u>marks<Return>
 nnoremap <Leader>pi  :<C-u>PluginInstall<Return>
 nnoremap <Leader>ag  :<C-u>Ag<Return>
 nnoremap <Leader>f :GFiles<CR>
+nnoremap <silent><Esc><Esc> :<C-u>set nohlsearch!<CR>
 
-nnoremap <Plug>(my-switch) <Nop>
-nmap <Leader>s <Plug>(my-switch)
-nnoremap <silent> <Plug>(my-switch)u :call <SID>toggle_syntax()<CR>
+if exists('$TMUX')
+	let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+	let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+	let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+	let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
 
-function! s:toggle_syntax() abort
-  if exists('g:rowvisible_on')
-    nocursolumn
-    echo 'syntax off'
-  else
-    cursolumn
-    echo 'syntax on'
-  endif
-endfunction
+if &term =~ "xterm"
+    let &t_SI .= "\e[?2004h"
+    let &t_EI .= "\e[?2004l"
+    let &pastetoggle = "\e[201~"
 
-if has('vim_starting')
-    " 挿入モード時に非点滅の縦棒タイプのカーソル
-    let &t_SI .= "\e[6 q"
-    " ノーマルモード時に非点滅のブロックタイプのカーソル
-    let &t_EI .= "\e[2 q"
-    " 置換モード時に非点滅の下線タイプのカーソル
-    let &t_SR .= "\e[4 q"
+    function XTermPasteBegin(ret)
+        set paste
+        return a:ret
+    endfunction
+
+    inoremap <special> <expr> <Esc>[200~ XTermPasteBegin("")
 endif
 

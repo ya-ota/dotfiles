@@ -13,7 +13,7 @@ zplug "yous/vanilli.sh"
 #zplug 'dracula/zsh', as:theme
 zplug mafredri/zsh-async, from:github
 zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
-
+zplug "zsh-users/zsh-syntax-highlighting", from:github
 
 # Make sure to use double quotes
 zplug "zsh-users/zsh-history-substring-search"
@@ -96,7 +96,21 @@ function peco-history-selection() {
 zle -N peco-history-selection
 bindkey '^R' peco-history-selection
 
+if [ $commands[kubectl] ]; then
+	source <(kubectl completion zsh)
+fi
+
 autoload -U promptinit; promptinit
 # optionally define some options
 PURE_CMD_MAX_EXEC_TIME=10
 prompt pure
+
+export PATH="/usr/local/opt/icu4c/bin:$PATH"
+export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+
+export BW_SESSION="8I3mxowhn6JKePN5zNwNimBi01GsHaSwxqQIFDCJXiKbHrahixs5jXnwNoxLVprPCq00oE/D9JiFfxF0Gi85bw=="
+
+
+# Load the kubectl completion code for zsh[1] into the current shell
+source <(kubectl completion zsh)
+
